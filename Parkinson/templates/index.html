@@ -1,60 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Parkinson's Detection</title>
-</head>
-<style>
-    body{
-        background-color: rgb(76, 80, 13);
-        text-align: center;
-        font-size:2em;
-    }
-    h1{
-        color: rgb(90, 18, 18);
-        font-size:2em;
-    }
-</style>
-<body>
-    <h1>Parkinson's Disease Detection</h1>
-    <form action="/predict" method="post" enctype="multipart/form-data">
-        <label for="model_type">Select model:</label><br>
-        <input type="radio" id="spiral" name="model_type" value="spiral" checked>
-        <label for="spiral">Spiral</label>
-        <input type="radio" id="wave" name="model_type" value="wave">
-        <label for="wave">Wave</label><br><br>
-        <label for="file">Choose an image (spiral or wave):</label>
-        <input type="file" id="file" name="file" accept="image/*" required><br><br>
-        <input type="submit" value="Predict">
-    </form>
-    <div>
-        <img src="" alt="" id="preview">
-        <p id="result"></p>
+    <link rel="stylesheet" href="./static/style.css" />
+  </head>
+
+  <body>
+    <div class="top">
+      <div class="left">
+        <img src="./static/detect_parkinsons_opencv_patient.jpg" alt="" />
+      </div>
+      <div class="right">
+        <h1>Parkinson's Disease Detection</h1>
+        <form
+          action="/predict"
+          method="post"
+          enctype="multipart/form-data"
+          class="form"
+        >
+          <div class="selection">
+            <label for="model_type">Select model:</label>
+            <div class="spiral">
+              <input
+              type="radio"
+              id="spiral"
+              name="model_type"
+              value="spiral"
+              checked
+              />
+              <label for="spiral">Spiral</label>
+            </div>
+            <div class="wave">
+              <input type="radio" id="wave" name="model_type" value="wave" />
+              <label for="wave">Wave</label><br />
+            </div>
+          </div>
+          <div class="fileChose">
+            <label for="file">Choose an image (spiral or wave):</label>
+            <input
+              type="file"
+              id="file"
+              name="file"
+              accept="image/*"
+              required
+            />
+          </div>
+          <button class="submit"> Predict</button>
+        </form>
+        <div class="result">
+          <img src="" alt="" id="preview" />
+          <p id="result"></p>
+        </div>
+      </div>
     </div>
     <script>
-        document.getElementById('file').onchange = function(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = document.getElementById('preview');
-                    img.src = e.target.result;
-                    img.style.display = 'block';
-                };
-                reader.readAsDataURL(file);
-            }
-        };
-        document.querySelector('form').onsubmit = async function (event) {
-            event.preventDefault();
-            const formData = new FormData(this);
-            const response = await fetch('/predict', {
-                method: 'POST',
-                body: formData
-            });
-            const result = await response.json();
-            document.getElementById('result').innerText = 'Prediction: ' + result.prediction;
-        };
+      document.getElementById("file").onchange = function (event) {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const img = document.getElementById("preview");
+            img.src = e.target.result;
+            img.style.display = "block";
+          };
+          reader.readAsDataURL(file);
+        }
+      };
+      document.querySelector("form").onsubmit = async function (event) {
+        event.preventDefault();
+        const formData = new FormData(this);
+        const response = await fetch("/predict", {
+          method: "POST",
+          body: formData,
+        });
+        const result = await response.json();
+        console.log(result.prediction);
+        document.getElementById("result").innerText =
+          "Prediction: " + result.prediction;
+      };
     </script>
-</body>
+  </body>
 </html>
